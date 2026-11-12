@@ -1,5 +1,6 @@
 ---
 import Ink from './Ink.astro';
+import SocialIcon from './SocialIcon.astro';
 import { artist, links, nav } from '../data/site';
 ---
 
@@ -37,8 +38,8 @@ import { artist, links, nav } from '../data/site';
     }
   </nav>
   <div class="header__actions">
-    <Ink href={links.tiktok} variant="text" class="rise" external>TikTok</Ink>
-    <Ink href={links.instagram} variant="text" class="rise" external>Instagram</Ink>
+    <SocialIcon network="tiktok" href={links.tiktok} class="rise" />
+    <SocialIcon network="instagram" href={links.instagram} class="rise" />
     <Ink book class="rise">Agendar cita</Ink>
   </div>
   <button class="burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
