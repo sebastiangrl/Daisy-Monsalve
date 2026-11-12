@@ -465,10 +465,10 @@ function initStylePick(root: ParentNode) {
 
   trigger.addEventListener('click', (event) => {
     event.stopPropagation();
-    const willOpen = menu.hidden;
-    menu.hidden = !willOpen;
-    trigger.setAttribute('aria-expanded', String(willOpen));
-    pick.classList.toggle('is-open', willOpen);
+    const opening = menu.hidden === true;
+    menu.hidden = !opening;
+    trigger.setAttribute('aria-expanded', String(opening));
+    pick.classList.toggle('is-open', opening);
   });
 
   options.forEach((option) => {
@@ -710,10 +710,10 @@ function initMenu() {
   };
 
   burger.addEventListener('click', () => {
-    const willOpen = menu.hidden;
-    menu.hidden = !willOpen;
-    burger.setAttribute('aria-expanded', String(willOpen));
-    document.body.classList.toggle('is-locked', willOpen);
+    const opening = menu.hidden === true;
+    menu.hidden = !opening;
+    burger.setAttribute('aria-expanded', String(opening));
+    document.body.classList.toggle('is-locked', opening);
   });
 
   menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
