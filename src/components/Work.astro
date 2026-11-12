@@ -1,0 +1,35 @@
+---
+import Frame from './Frame.astro';
+import Ink from './Ink.astro';
+import { collage } from '../data/site';
+---
+
+<section class="work" id="trabajo">
+  <header class="work__head">
+    <h2 data-write>Conoce mi trabajo</h2>
+    <p data-write>
+      Piezas oscuras, elegantes y bien estructuradas. El ornamento y la ilustración se encuentran para que cada tatuaje tenga identidad propia.
+    </p>
+  </header>
+  <div class="work__board">
+    <p class="note note--left" data-write>
+      Me interesa el contraste: negros que se asientan, líneas que no sobran y una textura que acompaña al cuerpo en lugar de pelear con él.
+    </p>
+    <div class="collage">
+      <svg class="ribbon" viewBox="0 0 1131 1180" aria-hidden="true">
+        <defs>
+          <path id="daisy-path" d="M-80,860 C 140,620 380,980 640,700 S 1040,420 1280,640" />
+        </defs>
+        <text>
+          <textPath href="#daisy-path">Daisy Monsalve · Daisy Monsalve · Daisy Monsalve ·</textPath>
+        </text>
+      </svg>
+      {collage.map((piece) => <Frame piece={piece} from={piece.from} class={piece.slot} eager={piece.slot === 'slot-a'} autoplay />)}
+    </div>
+    <p class="note note--right" data-write>
+      Cada diseño se dibuja pensando en la zona, el movimiento y el equilibrio. La piel no es un recuadro: es parte de la composición.
+    </p>
+    <p class="note note--bottom" data-write>Blackout, línea fina y formatos grandes, con la misma ejecución limpia.</p>
+    <Ink class="work__more" variant="line">Ver galería de tatuajes</Ink>
+  </div>
+</section>

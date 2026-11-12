@@ -1,0 +1,75 @@
+---
+import { reviews, steps } from '../data/site';
+---
+
+<div class="portal" id="proceso">
+  <div class="portal__pin" data-portal-pin>
+    <section class="process" data-zoom>
+      <div class="process__intro">
+        <h2 class="process__title">
+          <span class="line" data-write="hold">Conoce</span>
+          <span class="line" data-write="hold">el proceso</span>
+        </h2>
+        <p data-write="hold">
+          De la idea a la piel, sin apuro. Cada paso cuida la composición y la forma en que la pieza va a acompañarte.
+        </p>
+      </div>
+      <div class="steps">
+        {
+          steps.map((step) => (
+            <article class={`step step--${step.n}`}>
+              {step.textFirst && (
+                <div class="step__copy">
+                  <h3 data-write="hold">{step.title}</h3>
+                  <p data-write="hold">{step.text}</p>
+                </div>
+              )}
+              <div class="digit" id={step.n === '2' ? 'digit-2' : undefined}>
+                <span>{step.n}</span>
+              </div>
+              {!step.textFirst && (
+                <div class="step__copy">
+                  <h3 data-write="hold">{step.title}</h3>
+                  <p data-write="hold">{step.text}</p>
+                </div>
+              )}
+            </article>
+          ))
+        }
+      </div>
+    </section>
+    <section class="reviews" id="resenas" aria-label="Reseñas de clientes">
+      <p class="reviews__mark" aria-hidden="true">Reseñas</p>
+      <header class="reviews__head">
+        <h2 data-write="hold">Reseñas de mis clientes</h2>
+        <p data-write="hold">Palabras de quienes ya se sentaron. El diseño se queda; la sesión también.</p>
+      </header>
+      <div class="reviews__marquee" data-reviews-marquee>
+        <div class="reviews__track">
+          {
+            reviews.map((review) => (
+              <article class="review">
+                <h3>{review.name}</h3>
+                <p>{review.text}</p>
+                <p class="stars" aria-label="5 de 5">
+                  <span aria-hidden="true">★★★★★</span>
+                </p>
+              </article>
+            ))
+          }
+          {
+            reviews.map((review) => (
+              <article class="review" aria-hidden="true">
+                <h3>{review.name}</h3>
+                <p>{review.text}</p>
+                <p class="stars" aria-label="5 de 5">
+                  <span aria-hidden="true">★★★★★</span>
+                </p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

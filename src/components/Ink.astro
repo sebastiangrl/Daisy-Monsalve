@@ -1,0 +1,49 @@
+---
+interface Props {
+  href?: string;
+  class?: string;
+  variant?: 'line' | 'solid' | 'text';
+  type?: 'button' | 'submit';
+  book?: boolean;
+  external?: boolean;
+}
+
+const {
+  href,
+  class: className = '',
+  variant = 'line',
+  type = 'button',
+  book = false,
+  external = false,
+  ...rest
+} = Astro.props;
+
+const classes = ['ink', `ink--${variant}`, className];
+---
+
+{
+  book ? (
+    <button type="button" class:list={classes} data-open-book {...rest}>
+      <span class="ink__pool" aria-hidden="true" />
+      <span class="ink__flood" aria-hidden="true" />
+      <span class="ink__label"><slot /></span>
+    </button>
+  ) : href ? (
+    <a
+      href={href}
+      class:list={classes}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      {...rest}
+    >
+      <span class="ink__pool" aria-hidden="true" />
+      <span class="ink__flood" aria-hidden="true" />
+      <span class="ink__label"><slot /></span>
+    </a>
+  ) : (
+    <button type={type} class:list={classes} {...rest}>
+      <span class="ink__pool" aria-hidden="true" />
+      <span class="ink__flood" aria-hidden="true" />
+      <span class="ink__label"><slot /></span>
+    </button>
+  )
+}

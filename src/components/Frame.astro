@@ -1,0 +1,34 @@
+---
+import type { Piece, Side } from '../data/site';
+
+interface Props {
+  piece: Piece;
+  from?: Side;
+  class?: string;
+  eager?: boolean;
+  autoplay?: boolean;
+}
+
+const { piece, from, class: className = '', eager = false, autoplay = false } = Astro.props;
+---
+
+<button class:list={['media', className]} type="button" data-piece={piece.id} data-from={from}>
+  {
+    piece.kind === 'video' ? (
+      <video
+        muted
+        loop
+        playsinline
+        poster={piece.poster}
+        preload={autoplay ? 'metadata' : 'none'}
+        data-autoplay={autoplay ? '' : undefined}
+      >
+        <source src={piece.src} type="video/mp4" />
+      </video>
+    ) : (
+      <img src={piece.src} alt={piece.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    )
+  }
+  <span class="media__ink" aria-hidden="true"></span>
+  <span class="media__cap">{piece.caption}</span>
+</button>

@@ -1,0 +1,37 @@
+---
+import { styles } from '../data/site';
+---
+
+<section class="styles" id="estilos" data-styles>
+  <div class="styles__stage">
+    <div class="orb" data-orb>
+      {
+        styles.map((style, index) => (
+          <img
+            class="orb__img"
+            data-orb-img={index}
+            src={style.image}
+            alt={style.alt}
+            style={index === 0 ? undefined : 'opacity:0'}
+          />
+        ))
+      }
+      <div class="orb__veil" data-orb-veil hidden>
+        <p class="orb__title" data-orb-title>{styles[0].title}</p>
+        <p class="orb__text" data-orb-text>{styles[0].text}</p>
+      </div>
+    </div>
+    <div class="styles__chips" role="list">
+      {
+        styles.map((style, index) => (
+          <button class:list={['chip', { 'is-on': index === 0 }]} type="button" data-chip={index} role="listitem">
+            <span class="chip__orb">
+              <img src={style.image} alt="" />
+            </span>
+            <span class="chip__label">{style.title}</span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</section>

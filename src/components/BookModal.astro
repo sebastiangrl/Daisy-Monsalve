@@ -1,0 +1,87 @@
+---
+import Ink from './Ink.astro';
+import { artist, styleOptions, catalog } from '../data/site';
+
+const preview = catalog.find((piece) => piece.kind === 'image') ?? catalog[0];
+const previewSrc = preview.kind === 'image' ? preview.src : (preview.poster ?? preview.src);
+---
+
+<div class="book-modal sheet" data-book-modal hidden>
+  <span class="sheet__flood" data-book-flood aria-hidden="true"></span>
+  <span class="sheet__pool" data-book-pool aria-hidden="true"></span>
+  <p class="sheet__mark" aria-hidden="true">Cita</p>
+  <Ink variant="text" class="sheet__close" data-book-close data-book-in>Cerrar</Ink>
+  <div class="sheet__grid" role="dialog" aria-modal="true" aria-labelledby="book-modal-title">
+    <div class="sheet__intro">
+      <p class="sheet__kicker" data-book-in>Agenda</p>
+      <h2 id="book-modal-title" class="sheet__title" data-book-in>
+        Hablemos de tu pieza.
+      </h2>
+      <figure class="sheet__visual" data-book-in>
+        <img src={previewSrc} alt={preview.alt} width="480" height="600" loading="lazy" decoding="async" />
+      </figure>
+      <p class="sheet__body" data-book-in>
+        Cuéntame lo esencial. Al enviar, abrimos WhatsApp con el mensaje armado para {artist.mark}.
+      </p>
+    </div>
+    <form class="book-form form" data-book-form novalidate>
+      <label class="book-field field" data-book-in>
+        <span class="field__label">Nombre</span>
+        <input
+          class="field__input"
+          name="name"
+          type="text"
+          autocomplete="name"
+          required
+          placeholder="Cómo te llamas"
+        />
+      </label>
+      <div class="book-field field pick" data-style-pick>
+        <span class="field__label" id="book-style-label">Estilo</span>
+        <input type="hidden" name="style" value={styleOptions[0]} required data-style-value />
+        <button
+          type="button"
+          class="pick__trigger"
+          data-style-trigger
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-labelledby="book-style-label book-style-value"
+        >
+          <span id="book-style-value" data-style-label>{styleOptions[0]}</span>
+          <svg class="pick__chev" viewBox="0 0 8 4" aria-hidden="true">
+            <path d="M0 0 L4 4 L8 0" fill="none" stroke="currentColor" stroke-width="1" />
+          </svg>
+        </button>
+        <ul class="pick__menu" role="listbox" aria-labelledby="book-style-label" hidden data-style-menu>
+          {styleOptions.map((opt, index) => (
+            <li>
+              <button
+                type="button"
+                class="pick__option"
+                role="option"
+                data-style-option
+                data-value={opt}
+                aria-selected={index === 0 ? 'true' : 'false'}
+              >
+                {opt}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <label class="book-field field" data-book-in>
+        <span class="field__label">Mensaje</span>
+        <textarea
+          class="field__input field__input--area"
+          name="message"
+          rows="4"
+          required
+          placeholder="Zona del cuerpo, tamaño, referencias, fechas…"
+        ></textarea>
+      </label>
+      <Ink type="submit" variant="solid" class="sheet__submit" data-book-in>
+        Enviar por WhatsApp
+      </Ink>
+    </form>
+  </div>
+</div>

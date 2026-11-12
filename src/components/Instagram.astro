@@ -1,0 +1,19 @@
+---
+import Frame from './Frame.astro';
+import Ink from './Ink.astro';
+import { instagram, links } from '../data/site';
+---
+
+<section class="feed" id="instagram">
+  <div class="feed__top">
+    <p data-write>Sesiones, piezas terminadas y el proceso en detalle.</p>
+    <Ink href={links.instagram} variant="text" external>Sígueme en Instagram</Ink>
+  </div>
+  <div class="marquee">
+    <div class="marquee__track">
+      {instagram.map((piece) => <Frame piece={piece} />)}
+      {instagram.map((piece) => <Frame piece={piece} />)}
+    </div>
+  </div>
+  <p class="feed__end" data-write>El archivo sigue creciendo. Cada pieza tiene su propio ritmo.</p>
+</section>

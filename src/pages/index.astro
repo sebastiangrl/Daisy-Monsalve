@@ -1,0 +1,33 @@
+---
+import About from '../components/About.astro';
+import BookBar from '../components/BookBar.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Instagram from '../components/Instagram.astro';
+import BookModal from '../components/BookModal.astro';
+import Lightbox from '../components/Lightbox.astro';
+import Portal from '../components/Portal.astro';
+import Styles from '../components/Styles.astro';
+import Work from '../components/Work.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base>
+  <Header />
+  <main>
+    <Hero />
+    <BookBar />
+    <div class="inked">
+      <div class="inked__dragon" aria-hidden="true"></div>
+      <Work />
+      <Styles />
+    </div>
+    <About />
+    <Portal />
+    <Instagram />
+  </main>
+  <Footer />
+  <Lightbox />
+  <BookModal />
+</Base>

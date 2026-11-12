@@ -1,0 +1,38 @@
+---
+import Ink from './Ink.astro';
+import { artist, footer, links } from '../data/site';
+---
+
+<footer class="footer" id="agenda">
+  <p class="footer__mark" aria-hidden="true">{artist.name}</p>
+  <div class="footer__top">
+    <div class="footer__invite">
+      <p class="footer__line" data-write>{footer.line}</p>
+      <Ink book>Agendar una cita</Ink>
+    </div>
+    <div class="footer__cols">
+      <div>
+        <p>Redes sociales</p>
+        <Ink href={links.tiktok} variant="text" external>TikTok</Ink>
+        <Ink href={links.instagram} variant="text" external>Instagram</Ink>
+      </div>
+      <div>
+        <p>Contacto</p>
+        <Ink href={links.whatsapp} variant="text" external>WhatsApp</Ink>
+        <Ink href="#trabajo" variant="text">Ver el trabajo</Ink>
+      </div>
+    </div>
+  </div>
+  <div class="footer__base">
+    <p>
+      {footer.credit}<br />
+      <a class="footer__studio" href={footer.studioUrl} target="_blank" rel="noopener noreferrer">
+        <strong>{footer.studio}</strong>
+      </a>
+    </p>
+    <p>
+      {footer.rights}<br />
+      <strong>{footer.year}</strong>
+    </p>
+  </div>
+</footer>

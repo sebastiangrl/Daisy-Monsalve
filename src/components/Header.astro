@@ -1,0 +1,70 @@
+---
+import Ink from './Ink.astro';
+import { artist, links, nav } from '../data/site';
+---
+
+<header class="header" data-header>
+  <a class="logo" href="#top" data-logo aria-label={artist.name}>
+    <span class="logo__flood" aria-hidden="true"></span>
+    <span class="logo__pool" aria-hidden="true"></span>
+    <span class="logo__word" data-logo-text>{artist.mark}</span>
+  </a>
+  <nav class="nav" aria-label="Secciones">
+    {
+      nav.map((item) =>
+        item.children ? (
+          <div class="nav__item">
+            <a class="nav__label" href={item.href}>
+              {item.label}
+              <svg class="chev" viewBox="0 0 8 4" aria-hidden="true">
+                <path d="M0 0 L4 4 L8 0" fill="none" stroke="currentColor" stroke-width="1" />
+              </svg>
+            </a>
+            <div class="nav__subs">
+              {item.children.map((child) => (
+                <a href={child.href}>{child.label}</a>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div class="nav__item">
+            <a class="nav__label" href={item.href}>
+              {item.label}
+            </a>
+          </div>
+        ),
+      )
+    }
+  </nav>
+  <div class="header__actions">
+    <Ink href={links.tiktok} variant="text" class="rise" external>TikTok</Ink>
+    <Ink href={links.instagram} variant="text" class="rise" external>Instagram</Ink>
+    <Ink book class="rise">Agendar cita</Ink>
+  </div>
+  <button class="burger" type="button" aria-expanded="false" aria-controls="menu" data-burger>
+    <span class="burger__lines" aria-hidden="true"></span>
+    <span class="sr">Menú</span>
+  </button>
+</header>
+<div class="menu" id="menu" hidden data-menu>
+  <div class="menu__flood" aria-hidden="true"></div>
+  <nav class="menu__nav" aria-label="Secciones móviles">
+    {
+      nav.map((item) => (
+        <div class="menu__group">
+          <a href={item.href}>{item.label}</a>
+          {item.children?.map((child) => (
+            <a class="menu__sub" href={child.href}>
+              {child.label}
+            </a>
+          ))}
+        </div>
+      ))
+    }
+    <div class="menu__social">
+      <Ink href={links.tiktok} variant="text" external>TikTok</Ink>
+      <Ink href={links.instagram} variant="text" external>Instagram</Ink>
+      <Ink book>Agendar cita</Ink>
+    </div>
+  </nav>
+</div>
