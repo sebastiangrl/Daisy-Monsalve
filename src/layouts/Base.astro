@@ -1,5 +1,9 @@
 ---
+import { asset } from '../lib/asset';
 import '../styles/global.css';
+
+const textureInk = asset('/textures/ink-swirl.webp');
+const textureDragon = asset('/textures/dragon.webp');
 
 interface Props {
   title?: string;
@@ -20,7 +24,11 @@ const {
     <meta name="description" content={description} />
     <meta name="theme-color" content="#000000" />
     <title>{title}</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={asset('/favicon.svg')} type="image/svg+xml" />
+    <style is:global set:html={`:root {
+      --texture-ink: url("${textureInk}");
+      --texture-dragon: url("${textureDragon}");
+    }`}></style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

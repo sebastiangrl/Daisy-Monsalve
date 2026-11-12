@@ -136,6 +136,7 @@ function initIntro() {
     onComplete: () => {
       ink.style.display = 'none';
       document.documentElement.classList.add('is-ready');
+      ScrollTrigger.sort();
       ScrollTrigger.refresh();
     },
   });
@@ -209,17 +210,19 @@ function initArrivals() {
     });
   }
 
-  const hero = document.querySelector('.hero__photo');
-  if (hero) {
-    gsap.fromTo(
-      hero,
-      { scale: 1 },
-      {
-        scale: 1.08,
-        ease: 'none',
-        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-      },
-    );
+  if (window.matchMedia('(min-width: 960px)').matches) {
+    const hero = document.querySelector('.hero__photo');
+    if (hero) {
+      gsap.fromTo(
+        hero,
+        { scale: 1 },
+        {
+          scale: 1.08,
+          ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+        },
+      );
+    }
   }
 }
 
@@ -229,21 +232,101 @@ function indexFromProgress(value: number) {
   return 2;
 }
 
-function initStyles() {
+let desktopScrollReady = false;
+let desktopScrollTeardown: (() => void) | null = null;
+
+function initDesktopScroll() {
+  if (desktopScrollReady || reduce) return;
+  initStylesDesktop();
+  initArrivals();
+  initPortal();
+  ScrollTrigger.sort();
+  ScrollTrigger.refresh();
+  desktopScrollReady = true;
+  desktopScrollTeardown = () => {
+    const root = document.querySelector<HTMLElement>('.portal');
+    ScrollTrigger.getById('portal')?.kill();
+    if (root) delete root.dataset.bound;
+    resetStylesMotion(stylesRoot());
+    desktopScrollReady = false;
+    desktopScrollTeardown = null;
+  };
+}
+
+function queueDesktopScroll() {
+  if (desktopScrollReady) return;
+  if (document.documentElement.classList.contains('is-ready')) {
+    initDesktopScroll();
+    return;
+  }
+  const observer = new MutationObserver(() => {
+    if (!document.documentElement.classList.contains('is-ready')) return;
+    observer.disconnect();
+    initDesktopScroll();
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+}
+
+function stylesRoot() {
   const section = document.querySelector<HTMLElement>('[data-styles]');
-  const images = section ? [...section.querySelectorAll<HTMLElement>('[data-orb-img]')] : [];
-  const chips = section ? [...section.querySelectorAll<HTMLElement>('[data-chip]')] : [];
-  const title = section?.querySelector<HTMLElement>('[data-orb-title]');
-  const text = section?.querySelector<HTMLElement>('[data-orb-text]');
-  const veil = section?.querySelector<HTMLElement>('[data-orb-veil]');
-  const orb = section?.querySelector<HTMLElement>('[data-orb]');
-  if (!section || images.length < 3 || reduce || section.dataset.bound === '1') return;
-  section.dataset.bound = '1';
+  if (!section) return null;
+  return {
+    section,
+    images: [...section.querySelectorAll<HTMLElement>('[data-orb-img]')],
+    chips: [...section.querySelectorAll<HTMLElement>('[data-chip]')],
+    title: section.querySelector<HTMLElement>('[data-orb-title]'),
+    text: section.querySelector<HTMLElement>('[data-orb-text]'),
+    veil: section.querySelector<HTMLElement>('[data-orb-veil]'),
+    orb: section.querySelector<HTMLElement>('[data-orb]'),
+  };
+}
+
+function resetStylesMotion(root: ReturnType<typeof stylesRoot>) {
+  if (!root) return;
+  ScrollTrigger.getById('styles')?.kill();
+  root.section.classList.remove('is-preview');
+  gsap.set([...root.images, ...root.chips, root.orb].filter(Boolean), { clearProps: 'all' });
+  delete root.section.dataset.stylesMode;
+}
+
+function initStylesMobile() {
+  if (reduce) return;
+  const root = stylesRoot();
+  if (!root || root.images.length < 3) return;
+  if (root.section.dataset.stylesMode === 'mobile') return;
+  resetStylesMotion(root);
+  root.section.dataset.stylesMode = 'mobile';
+
+  const paint = (index: number) => {
+    root.images.forEach((img, i) => {
+      gsap.set(img, { opacity: i === index ? 1 : 0, scale: 1 });
+    });
+    root.chips.forEach((chip, i) => chip.classList.toggle('is-on', i === index));
+    if (root.title) root.title.textContent = styles[index]?.title ?? '';
+    if (root.text) root.text.textContent = styles[index]?.text ?? '';
+    if (root.veil) root.veil.hidden = false;
+    root.section.classList.add('is-preview');
+  };
+
+  paint(0);
+  root.chips.forEach((chip) => {
+    chip.addEventListener('click', () => paint(Number(chip.dataset.chip)));
+  });
+}
+
+function initStylesDesktop() {
+  if (reduce) return;
+  const root = stylesRoot();
+  if (!root || root.images.length < 3) return;
+  if (root.section.dataset.stylesMode === 'desktop') return;
+  resetStylesMotion(root);
+  root.section.dataset.stylesMode = 'desktop';
 
   let progress = 0;
   let scrollIndex = 0;
   let previewIndex: number | null = null;
   let tweening = false;
+  const { section, images, chips, title, text, veil, orb } = root;
 
   const paint = (index: number, animate: boolean) => {
     images.forEach((img, i) => {
@@ -284,21 +367,6 @@ function initStyles() {
     }
   };
 
-  ScrollTrigger.create({
-    id: 'styles',
-    trigger: section,
-    start: 'top top',
-    end: window.matchMedia('(min-width: 960px)').matches ? '+=200%' : '+=150%',
-    pin: true,
-    scrub: 0.55,
-    onUpdate: (self) => {
-      progress = self.progress;
-      syncFromScroll(!tweening);
-    },
-  });
-
-  paint(0, false);
-
   const preview = (index: number) => {
     previewIndex = index;
     section.classList.add('is-preview');
@@ -313,6 +381,21 @@ function initStyles() {
     paint(scrollIndex, true);
   };
 
+  ScrollTrigger.create({
+    id: 'styles',
+    trigger: section,
+    start: 'top top',
+    end: '+=200%',
+    pin: true,
+    scrub: 0.55,
+    onUpdate: (self) => {
+      progress = self.progress;
+      syncFromScroll(!tweening);
+    },
+  });
+
+  paint(0, false);
+
   chips.forEach((chip) => {
     const index = Number(chip.dataset.chip);
     chip.addEventListener('mouseenter', () => preview(index));
@@ -325,11 +408,24 @@ function initStyles() {
       const trigger = ScrollTrigger.getById('styles');
       if (!trigger) return;
       const top = trigger.start + (trigger.end - trigger.start) * target;
-      window.scrollTo({ top, behavior: 'smooth' });
+      scrollPageTo(top);
       window.setTimeout(() => {
         tweening = false;
       }, 700);
     });
+  });
+}
+
+function initMobilePortal() {
+  const reviews = document.querySelector<HTMLElement>('.reviews');
+  const process = document.querySelector<HTMLElement>('[data-zoom]');
+  if (!reviews) return;
+  gsap.set(reviews, { autoAlpha: 1, clearProps: 'transform' });
+  if (process) gsap.set(process, { scale: 1, clearProps: 'transform' });
+
+  document.querySelector<HTMLElement>('#digit-2')?.closest('.step')?.addEventListener('click', () => {
+    const target = document.getElementById('resenas');
+    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
 
@@ -561,16 +657,6 @@ function initPortal() {
     .to(reviews, { autoAlpha: 1, duration: 0.22 }, 1.15)
     .to(reviewChars, { opacity: 1, duration: 0.16, stagger: { amount: 0.2 }, ease: 'none' }, 1.2)
     .from(cards, { y: 36, autoAlpha: 0, duration: 0.28, stagger: { amount: 0.24 } }, 1.22);
-
-  document.querySelectorAll<HTMLAnchorElement>('a[href="#resenas"]').forEach((link) => {
-    link.addEventListener('click', (event) => {
-      const trigger = ScrollTrigger.getById('portal');
-      if (!trigger) return;
-      event.preventDefault();
-      const top = trigger.start + (trigger.end - trigger.start) * 0.78;
-      window.scrollTo({ top, behavior: 'smooth' });
-    });
-  });
 }
 
 function initVideos() {
@@ -717,12 +803,54 @@ function initMenu() {
   });
 
   menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+  menu.querySelectorAll('[data-menu-close]').forEach((node) => node.addEventListener('click', close));
+  menu.querySelectorAll('[data-open-book]').forEach((node) => node.addEventListener('click', close));
+
+  document.addEventListener('keydown', (event) => {
+    if (menu.hidden || event.key !== 'Escape') return;
+    close();
+  });
 
   window.addEventListener(
     'scroll',
     () => header.classList.toggle('is-stuck', window.scrollY > 20),
     { passive: true },
   );
+}
+
+const pageScroll = { y: 0 };
+
+function scrollPageTo(top: number) {
+  pageScroll.y = window.scrollY;
+  gsap.to(pageScroll, {
+    y: Math.max(0, top),
+    duration: reduce ? 0 : 0.7,
+    ease: 'power2.inOut',
+    overwrite: true,
+    onUpdate: () => window.scrollTo(0, pageScroll.y),
+  });
+}
+
+function initAnchors() {
+  document.addEventListener('click', (event) => {
+    const source = event.target instanceof Element ? event.target : null;
+    const link = source?.closest('a[href^="#"]');
+    if (!(link instanceof HTMLAnchorElement)) return;
+    const hash = link.getAttribute('href');
+    if (!hash || hash === '#') return;
+
+    const portal = hash === '#resenas' ? ScrollTrigger.getById('portal') : undefined;
+    if (portal) {
+      event.preventDefault();
+      scrollPageTo(portal.start + (portal.end - portal.start) * 0.78);
+      return;
+    }
+
+    const target = document.querySelector(hash);
+    if (!(target instanceof HTMLElement)) return;
+    event.preventDefault();
+    scrollPageTo(target.getBoundingClientRect().top + window.scrollY);
+  });
 }
 
 function boot() {
@@ -734,21 +862,22 @@ function boot() {
   initBooking();
   initLightbox();
   initVideos();
+  initAnchors();
   if (reduce) return;
 
-  initStyles();
   const mm = gsap.matchMedia();
   mm.add('(min-width: 960px)', () => {
-    initArrivals();
-    initPortal();
+    queueDesktopScroll();
     return () => {
-      const root = document.querySelector<HTMLElement>('.portal');
-      if (root) delete root.dataset.bound;
+      desktopScrollTeardown?.();
     };
   });
   mm.add('(max-width: 959px)', () => {
     initArrivals();
+    initMobilePortal();
+    initStylesMobile();
     document.querySelectorAll<HTMLElement>('[data-write="hold"]').forEach(writeOnScroll);
+    return () => resetStylesMotion(stylesRoot());
   });
 }
 

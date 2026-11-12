@@ -47,6 +47,11 @@ import { artist, links, nav } from '../data/site';
   </button>
 </header>
 <div class="menu" id="menu" hidden data-menu>
+  <button class="menu__back" type="button" data-menu-close aria-label="Cerrar menú"></button>
+  <button class="menu__close" type="button" data-menu-close aria-label="Cerrar menú">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </button>
   <div class="menu__flood" aria-hidden="true"></div>
   <nav class="menu__nav" aria-label="Secciones móviles">
     {
