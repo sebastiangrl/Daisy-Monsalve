@@ -890,6 +890,38 @@ button:focus-visible { outline: 1px solid #fff; outline-offset: 3px; }
 .footer__studio:hover,
 .footer__studio:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
 
+.wa-fab {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: max(20px, env(safe-area-inset-bottom, 0px));
+  z-index: 35;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 50%;
+  background: #fff;
+  color: #000;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  transition: transform 0.35s var(--ease), box-shadow 0.35s ease;
+}
+.wa-fab svg { width: 28px; height: 28px; display: block; }
+.wa-fab:hover,
+.wa-fab:focus-visible {
+  transform: scale(1.06);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65);
+  outline: 1px solid #fff;
+  outline-offset: 3px;
+}
+body.is-locked .wa-fab {
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
 .sheet[hidden] { display: none !important; }
 .sheet {
   position: fixed;

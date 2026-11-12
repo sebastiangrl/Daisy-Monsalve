@@ -23,7 +23,7 @@ export const whatsappUsername = 'daisy__monsalve';
 export const links = {
   agenda: '#agenda',
   instagram: 'https://www.instagram.com/daisy__monsalve/',
-  tiktok: 'https://www.instagram.com/daisy__monsalve/',
+  tiktok: 'https://www.tiktok.com/@daisy_monsalve',
   whatsapp: `https://wa.me/@${whatsappUsername}`,
   gallery: '#trabajo',
   styles: '#estilos',
