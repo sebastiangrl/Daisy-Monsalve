@@ -3,7 +3,7 @@ import { asset } from '../lib/asset';
 import '../styles/global.css';
 
 const textureInk = asset('/textures/ink-swirl.webp');
-const textureDragon = asset('/textures/dragon.webp');
+const textureTattoo = asset('/media/photo/espalda-rostro.webp');
 
 interface Props {
   title?: string;
@@ -27,7 +27,7 @@ const {
     <link rel="icon" href={asset('/favicon.svg')} type="image/svg+xml" />
     <style is:global set:html={`:root {
       --texture-ink: url("${textureInk}");
-      --texture-dragon: url("${textureDragon}");
+      --texture-tattoo: url("${textureTattoo}");
     }`}></style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

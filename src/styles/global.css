@@ -23,7 +23,11 @@ body {
   overflow-x: clip;
 }
 
-body.is-locked { overflow: hidden; }
+html.is-locked,
+body.is-locked {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
 
 body::before {
   content: "";
@@ -291,8 +295,7 @@ button:focus-visible { outline: 1px solid #fff; outline-offset: 3px; }
   font-size: 14px;
   font-weight: 700;
   line-height: 1;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
   cursor: pointer;
 }
 .ink__label { position: relative; z-index: 1; }
@@ -443,9 +446,9 @@ button:focus-visible { outline: 1px solid #fff; outline-offset: 3px; }
 .inked { position: relative; }
 .inked__dragon {
   position: absolute;
-  inset: 0;
-  background: var(--texture-dragon) center top / cover no-repeat;
-  opacity: 0.32;
+  inset: -4% 0;
+  background: var(--texture-tattoo) center 18% / cover no-repeat;
+  opacity: 0.42;
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 62%, transparent 96%);
   mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 62%, transparent 96%);
@@ -558,7 +561,7 @@ button:focus-visible { outline: 1px solid #fff; outline-offset: 3px; }
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: #000 var(--texture-dragon) center / cover no-repeat;
+  background: #000 var(--texture-tattoo) center / cover no-repeat;
 }
 .styles::before {
   content: "";
@@ -1078,7 +1081,7 @@ button:focus-visible { outline: 1px solid #fff; outline-offset: 3px; }
   background: #fff;
   color: #000;
 }
-.pick__option[aria-selected='true'] { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.pick__option[aria-selected='true'] { font-weight: 700; }
 
 .lb[hidden] { display: none !important; }
 .lb { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; background: #000; }
@@ -1328,8 +1331,14 @@ button:focus-visible { outline: 1px solid #fff; outline-offset: 3px; }
     visibility: visible !important;
   }
   .process { height: auto; grid-template-columns: 1fr; padding: 72px 16px 32px; }
-  .steps { grid-template-columns: 1fr; gap: 20px; }
-  .step { display: grid; gap: 8px; }
+  .steps { grid-template-columns: 1fr; gap: 28px; }
+  .step {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .step .step__copy { order: 1; display: flex; flex-direction: column; gap: 8px; }
+  .step .digit { order: 2; }
   .step--1, .step--2, .step--3, .step--4 { margin-top: 0; }
   .step--2 { cursor: pointer; }
   .digit { height: min(200px, 42vw); }

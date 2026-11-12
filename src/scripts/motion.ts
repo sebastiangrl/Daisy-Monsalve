@@ -6,6 +6,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+function setPageLocked(locked: boolean) {
+  document.documentElement.classList.toggle('is-locked', locked);
+  document.body.classList.toggle('is-locked', locked);
+}
+
 function split(el: HTMLElement) {
   if (el.dataset.split === '1') return;
   const text = (el.textContent ?? '').replace(/\s+/g, ' ').trim();
@@ -473,7 +478,7 @@ function initBooking() {
     if (value) {
       lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       modal.hidden = false;
-      document.body.classList.add('is-locked');
+      setPageLocked(true);
       if (reduce) {
         if (flood) gsap.set(flood, { opacity: 0, clearProps: 'transform' });
         if (pool) gsap.set(pool, { opacity: 0 });
@@ -487,7 +492,7 @@ function initBooking() {
         form.querySelector<HTMLInputElement>('input[name="name"]')?.focus({ preventScroll: true });
       });
     } else {
-      document.body.classList.remove('is-locked');
+      setPageLocked(false);
       if (reduce) {
         modal.hidden = true;
         lastFocus?.focus({ preventScroll: true });
@@ -744,7 +749,7 @@ function initLightbox() {
     index = found;
     lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     root.hidden = false;
-    document.body.classList.add('is-locked');
+    setPageLocked(true);
     paint();
     root.querySelector<HTMLElement>('[data-lb-close]')?.focus();
   };
@@ -752,7 +757,7 @@ function initLightbox() {
   const close = () => {
     root.hidden = true;
     video.pause();
-    document.body.classList.remove('is-locked');
+    setPageLocked(false);
     lastFocus?.focus();
   };
 
@@ -792,14 +797,14 @@ function initMenu() {
   const close = () => {
     menu.hidden = true;
     burger.setAttribute('aria-expanded', 'false');
-    document.body.classList.remove('is-locked');
+    setPageLocked(false);
   };
 
   burger.addEventListener('click', () => {
     const opening = menu.hidden === true;
     menu.hidden = !opening;
     burger.setAttribute('aria-expanded', String(opening));
-    document.body.classList.toggle('is-locked', opening);
+    setPageLocked(opening);
   });
 
   menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
